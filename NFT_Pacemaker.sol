@@ -94,6 +94,9 @@ contract PacemakerNFT is ERC721, ERC721URIStorage, Ownable {
         emit ReceiverConfirmsDelivery (_tokenID, msg.sender);
         emit NFTUnlocked(_tokenID, msg.sender, unlockDescription);
     }
+    function lockNFT (uint _tokenID) public{
+        
+    }
 
     // The following functions are overrides required by Solidity.
 
