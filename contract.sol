@@ -90,8 +90,9 @@ contract VerificationManager {
     function createNFT (uint deviceId, address to) public{
         
         require ( medicalDevices[deviceId].status == DeviceStatus.APPROVED,"Device is not approved");
-        MedicalDeviceNFT (NFTcontract).mintNFT(medicalDevices[deviceId].metadata, to);
-
+        MedicalDeviceNFT (NFTcontract).mintNFT(to);
+        medicalDevices[deviceId].status = DeviceStatus.NFT_MINTED;
+       
     }
 
     
@@ -116,7 +117,7 @@ contract MedicalDeviceNFT is ERC721, ERC721URIStorage, Ownable {
     string metadata = "https://ipfs.io/ipfs/Qme7ss3ARVgxv6rXVPiikMJ8u2NLgmgszg13pYrDKEoiu";
     string passphrase = "pcmkr12384786e";
     
-    event NFTmintedForDevice(uint256 TokenId, address Owner, string DeviceName, string ModelNo, string Metadata );
+    event NFTmintedForDevice(uint256 TokenId, address Owner, string DeviceName, string ModelNo );
     event OwnershipTransferred (uint256 tokenID, address from, address to);
     event NFTtransferLocked (uint TokenID, string Reason);
     event NFTUnlocked (uint TokenID, address Owner,string unlockDescription );
@@ -133,13 +134,13 @@ contract MedicalDeviceNFT is ERC721, ERC721URIStorage, Ownable {
         _;
     }
 
-    function mintNFT(string memory _metadata, address to) public  onlyVerifierContract{ //string memory uri
+    function mintNFT(address to) public  onlyVerifierContract{ //string memory uri
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         //_setTokenURI(tokenId, _metadata);
         isTokenLocked[tokenId] = false;
-        emit NFTmintedForDevice(tokenId, to, deviceName, modelNumber, metadata);
+        emit NFTmintedForDevice(tokenId, to, deviceName, modelNumber);
         
        // _setTokenURI(tokenId, uri);
     }
